@@ -102,8 +102,8 @@ locHill.setExitBi( "oeste", locSlope );
 locHill.southAccess = false;
 
 locHill.getExitsDesc = function() {
-    return "Puedes ${seguir la ascensión hacia el este, e}, o \
-            bajar al acceso al mar hacia el ${norte, n}";
+    return "Puedes ${seguir el descenso hacia el oeste, o}, o \
+            internarte en la selva hacia el ${norte, n}";
 };
 
 const objFence = ctrl.creaObj(
@@ -905,7 +905,7 @@ objLightBulb.preTake = function() {
     
     if ( this.owner != locLighthouseYard ) {
         toret = takeAction.exe( parser.sentence );
-        ctrl.achievements.achieve( "iluminado" );
+        ctrl.achievements.achieved( "iluminado" );
     }
     
     return toret;
