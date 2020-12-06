@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ifindex version="1.0" xmlns="http://babel.ifarchive.org/protocol/iFiction/">
+    <story>
+        <identification>
+            <ifid>4E609220-DFE9-4F20-9551-39E51627EACE</ifid>
+            <format>html</format>
+        </identification>
+        <bibliographic>
+            <title>Isla Queimada</title>
+            <author>Baltasar</author>
+            <language>ES</language>
+            <headline>La supervivencia del náugfrago está amenazada por un enemigo oculto.</headline>
+            <genre>fiction</genre>
+            <forgiveness>polite</forgiveness>
+            <description>Un náufrago llega a Isla Queimada, en medio del Atlántico. ¡No puede creer su suerte! Sin embargo, un peligro oculto le amenaza... ¿dónde está todo el mundo?</description>
+        </bibliographic>
+        <contacts>
+            <authoremail>baltasarq@gmail.com</authoremail>
+            <url>http://caad.es/baltasarq/</url>
+        </contacts>
+        <release>
+            <version>1</version>
+            <releasedate>2020/12/01</releasedate>
+        </release>
+        <colophon>
+            <generator>Babble</generator>
+            <originated>2020/12/01</originated>
+        </colophon>
+    </story>
+</ifindex>
