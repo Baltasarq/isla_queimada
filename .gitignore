@@ -6,8 +6,8 @@
 *.z8
 *.ulx
 *.gblorb
-build/cordova/platforms
-build/cordova/node_modules
+platforms/
+node_modules/
 cpp/bin
 build.sh
 .gradle/
