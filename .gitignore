@@ -1,0 +1,15 @@
+*.bak
+*.exe
+*~
+*.log
+*.z5
+*.z8
+*.ulx
+*.gblorb
+build/cordova/platforms
+build/cordova/node_modules
+cpp/bin
+build.sh
+.gradle/
+package.json
+package-lock.json
