@@ -1106,7 +1106,7 @@ const locForestStaircase = ctrl.places.creaLoc(
 locForestStaircase.pic = "res/forest_staircase.jpg";
 locForestStaircase.setExitBi( "oeste", locLighthouseYard );
 locForestStaircase.getExitsDesc = function() {
-    return "Puedes ${subir, subir}, o ${bajar, bajar}.";
+    return "Puedes ${subir, sube}, o ${bajar, baja}.";
 };
 
 const objStairs = ctrl.creaObj(
