@@ -36,7 +36,7 @@
         <icon density="xxxhdpi" src="res/android/icons/lighthouse-xxxhdpi.png" />
 
         <icon src="res/android/icons/lighthouse.png" />
-        <screen src="res/android/icons/lighthouse.png" />
+        <splash src="res/android/icons/lighthouse.png" />
     </platform>
     <platform name="ios">
         <allow-intent href="itms:*" />
