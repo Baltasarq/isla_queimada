@@ -78,7 +78,7 @@ locSlope.setExitBi( "norte", locBeach );
 
 locSlope.getExitsDesc = function() {
     return "Puedes ${seguir la ascensión hacia el este, e}, o \
-            bajar al acceso al mar hacia el ${norte, n}";
+            bajar al acceso al mar hacia el ${norte, n}.";
 };
 
 
@@ -103,7 +103,7 @@ locHill.southAccess = false;
 
 locHill.getExitsDesc = function() {
     return "Puedes ${seguir el descenso hacia el oeste, o}, o \
-            internarte en la selva hacia el ${norte, n}";
+            internarte en la selva hacia el ${norte, n}.";
 };
 
 const objFence = ctrl.creaObj(
@@ -675,7 +675,7 @@ const locLighthouseHutFront = ctrl.places.creaLoc(
 locLighthouseHutFront.pic = "res/lighthouse.jpg";
 locLighthouseHutFront.setExitBi( "sur", locPathInJungle );
 locLighthouseHutFront.getExitsDesc = function() {
-    return "Puedes entrar en la case al ${este, este}, \
+    return "Puedes entrar en la casa al ${este, este}, \
             o volver al ${sur, sur}.";
 };
 
