@@ -724,8 +724,8 @@ const locLighthouseHut = ctrl.places.creaLoc(
     "Casa del farero",
     [ "casa", "farero", "faro" ],
     "Una pequeña estancia incluye todo lo que esta pequeña casa \
-     puede ofrecer: ${cocina, ex muebles}, ${despensa, ex muebles}, \
-     ${armario, ex muebles}, ${mesa, ex muebles} y ${cama, ex cama}.\
+     puede ofrecer: ${armario, ex muebles}, ${mesa, ex muebles}, \
+     ${cocina, ex cocina}, ${despensa, ex muebles}, y ${cama, ex cama}.\
      </p><p>Puedes salir hacia la selva al ${oeste, oeste}. \
      Hay otra puerta al ${norte, norte}."
 );
@@ -786,6 +786,51 @@ objBed.preSearch = function() {
     
     return toret;
 };
+
+var objKitchen = ctrl.creaObj(
+    "cocina",
+    [],
+    "Una cocina ya ruinosa.",
+    locLighthouseHut,
+    Ent.Scenery
+);
+objKitchen.setContainer();
+objKitchen.setOpen( false );
+
+objKitchen.preExamine = function() {
+    var toret = this.desc;
+    
+    if ( this.has( objOil ) ) {
+        toret += " Hay múltiples ${cacharros, busca en cocina} \
+                   de cotroso aspecto."
+    } else {
+        toret += " Múltiples y cotrosos cacharros se agolpan \
+                   en la repisa.";
+    }
+    
+    return toret;
+};
+
+objKitchen.preSearch = function() {
+    const player = ctrl.personas.getPlayer();
+    var toret = "Cacharros sin interés.";
+    
+    if ( this.has( objOil ) ) {
+        toret = "Rebuscando entre los cacharros has encontrado \
+                 un bote con algo de ennegrecido aceite.";
+        player.say( "Este aceite podría ser útil... me lo quedo." );
+        objOil.moveTo( player );
+    }
+    
+    return toret;
+};
+
+const objOil = ctrl.creaObj(
+    "aceite",
+    [],
+    "Aceite viscoso y un tanto... negro.",
+    objKitchen,
+    Ent.Portable );
 
 
 // ----------------------------------------- Lighthouse's basement --
@@ -914,7 +959,8 @@ objLightBulb.preTake = function() {
 const objSearchlight = ctrl.creaObj(
     "foco",
     [],
-    "El foco parece ${girar, empuja foco} sobre un ${eje, ex eje}.",
+    "Este foco parece que debería ${girar, empuja foco} \
+     sobre un gran ${eje, ex eje}.",
     locLighthouse,
     Ent.Scenery
 );
@@ -933,13 +979,17 @@ objSearchlight.preExamine = function() {
 };
 
 objSearchlight.prePush = function() {
-    var toret = "¡Se ha atascado!";
+    var toret = "¡Atascado!";
     
-    if ( !this.isOpen() ) {
-        this.setOpen();
-        toret = "Empujas con fuerza, y el faro cede un tanto. \
-                 Tras girar, ha quedado al descubierto \
-                 un pequeño ${armario, ex armarito}.";
+    if ( objAxis.oiled ) {
+        if ( !this.isOpen() ) {
+            this.setOpen();
+            toret = "Empujas con fuerza, y el faro cede un tanto. \
+                    Tras girar, ha quedado al descubierto \
+                    un pequeño ${armario, ex armarito}.";
+        }
+    } else {
+        ctrl.personas.getPlayer().say( "Así es que no hay manera..." );
     }
     
     return toret;
@@ -948,12 +998,33 @@ objSearchlight.prePush = function() {
 const objAxis = ctrl.creaObj(
     "eje",
     [],
-    "Sobre él giraría el foco. Le hace mucha falta un buen engrase. \
+    "Sobre él giraría el foco. Le hace mucha falta \
+     un ${buen engrase, busca en eje}. \
      Es casi seguro que es por eso por lo que no gira, \
      a pesar de haber corriente eléctrica.",
     locLighthouse,
     Ent.Scenery
 );
+objAxis.oiled = false;
+
+objAxis.preSearch = function() {
+    const player = ctrl.personas.getPlayer();
+    var toret = "No es posible.";
+    
+    if ( ctrl.isPresent( objOil ) ) {
+        this.oiled = true;
+        objOil.moveTo( ctrl.places.limbo );
+        toret = "Vertiendo el aceite sobre el eje, la maquinaria \
+                 parece haberlo intentado, \
+                 se oyó un zumbido y el foco \
+                 se ha movido un tanto... pero nada más.";
+        player.say( "Pues vaya fracaso..." );
+    } else {
+        player.say( "No tengo con qué engrasarlo..." );
+    }
+    
+    return toret;
+};
 
 const objToolbox = ctrl.creaObj(
     "armarito",
@@ -999,26 +1070,38 @@ var objFlareGun = ctrl.creaObj(
 
 objFlareGun.preStart = function() {
     const player = ctrl.personas.getPlayer();
+    const currentLoc = ctrl.places.getCurrentLoc();
     var toret = "No quieres malgastar la única bengala";
     
-    if ( this.owner == player
-      && player.owner == locLighthouseYard )
-    {
-        player.say( "¡Toma ya!" );
-        toret = "Has disparado a la bombilla, sobre las serpientes, \
-                 alzándose una gran llamarada sobre ellas. \
-                 ¡Salen corriendo! El calor y las llamas, \
-                 aunque de corta duración, hace que huyan \
-                 despavoridas. ¡El paso está ahora libre!";
-        
-        ctrl.print( "Tiras la pistola a un lado... \
-                     ya no sirve para nada." );
-        
-        objSnakes.moveTo( ctrl.places.limbo );
-        objLightBulb.moveTo( ctrl.places.limbo );
-        objFlareGun.moveTo( ctrl.places.limbo );
-        ctrl.places.doDesc();
+    if ( this.owner == player ) {
+        if ( currentLoc == locLighthouseYard ) {
+            if ( ctrl.isPresent( objLightBulb ) ) {
+                player.say( "¡Toma ya!" );
+                toret = "Has disparado a la bombilla, sobre las serpientes, \
+                        alzándose una gran llamarada sobre ellas. \
+                        ¡Salen corriendo! El calor y las llamas, \
+                        aunque de corta duración, hace que huyan \
+                        despavoridas. ¡El paso está ahora libre!";
+                
+                ctrl.print( "Tiras la pistola a un lado... \
+                            ya no sirve para nada." );
+                
+                objSnakes.moveTo( ctrl.places.limbo );
+                objLightBulb.moveTo( ctrl.places.limbo );
+                objFlareGun.moveTo( ctrl.places.limbo );
+                ctrl.places.doDesc();
+            } else {
+                player.say( "¿Será suficiente? \
+                            ¡No hay seguna oportunidad!" );
+                toret = "Disparar una bengala causará \
+                        una llamarada, seguro, pero...";
+            }
+        }
+    } else {
+        player.say( "¡Necesitaría empuñarla!" );
+        toret = "No la tienes en la mano.";
     }
+        
     
     return toret;
 };
@@ -1106,13 +1189,14 @@ const locForestStaircase = ctrl.places.creaLoc(
 locForestStaircase.pic = "res/forest_staircase.jpg";
 locForestStaircase.setExitBi( "oeste", locLighthouseYard );
 locForestStaircase.getExitsDesc = function() {
-    return "Puedes ${subir, sube}, o ${bajar, baja}.";
+    return "Puedes ${subir, oeste}, o ${bajar, este}.";
 };
 
 const objStairs = ctrl.creaObj(
     "escaleras",
     [ "escalera" ],
-    "Un impresionante trabajo hace que se pueda subir o bajar \
+    "Un impresionante trabajo hace que se pueda \
+     ${subir, o} o ${bajar, e} \
      la escalera mediante una serie de escalones empotrados en \
      la propia montaña.",
     locForestStaircase,
@@ -1140,7 +1224,7 @@ function amusing() {
             Se trata de una zona protegida, y por lo tanto \
             no se puede visitar más allá \
             de expediciones científicas autorizadas. \
-            Es el hogar de una especia de serpiente endémica \
+            Es el hogar de una especie de serpiente endémica \
             en peligro de extinción, y cuenta la leyenda que \
             las serpientes mataron a la familia del farero. \
             Eso sí, allí no hay ni nunca ha habido un presidio.";
@@ -1159,7 +1243,7 @@ locDock.preExit = function() {
     dvCmds.style.display = "none";
     
     if ( ctrl.isPresent( objMobilePhone ) ) {
-        ctrl.achievements.achieved( "SOS" );
+        ctrl.achievements.achieved( "sos" );
     }
     
     ctrl.achievements.achieved( "escapista" );
