@@ -1,17 +1,16 @@
 {
     "name": "com.devbaltasarq.islaqueimada",
-    "displayName": "HelloCordova",
-    "version": "1.0.0",
-    "description": "A sample Apache Cordova application that responds to the deviceready event.",
-    "main": "index.js",
+    "displayName": "Isla Queimada",
+    "version": "1.0.1",
+    "description": "Ficción interactiva. Un náufrago llega a Isla Queimada, en medio del Atlántico. ¡No puede creer su suerte! Sin embargo, un peligro oculto le amenaza... ¿dónde está todo el mundo?",
+    "main": "index.html",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
     },
     "keywords": [
         "ecosystem:cordova"
     ],
-    "author": "Apache Cordova Team",
-    "license": "Apache-2.0",
+    "author": "Baltasar",
+    "license": "MIT License",
     "devDependencies": {
         "cordova-android": "^9.0.0",
         "cordova-plugin-whitelist": "^1.3.4"
