@@ -1321,5 +1321,4 @@ objCompass.preExamine = function() {
 };
 
 ctrl.personas.changePlayer( pc );
-//ctrl.places.setStart( locBeach );
-ctrl.places.setStart( locPrisonOffice );
+ctrl.places.setStart( locBeach );
