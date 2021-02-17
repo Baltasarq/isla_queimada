@@ -14,7 +14,7 @@ ctrl.setIntro(
 
 ctrl.setPic( "res/queimada_island.jpg" );
 ctrl.setAuthor( "baltasarq@gmail.com" );
-ctrl.setVersion( "1.0 20201201" );
+ctrl.setVersion( "1.1 20210214" );
 
 
 // *** Locs =========================================================
@@ -265,6 +265,19 @@ locYard.preEnter = function() {
     }
 };
 
+locYard.preGo = function() {
+    const goAction = actions.getAction( "go" );
+    var toret = "";
+    
+    if ( parser.sentence.term1 == "este" ) {
+        toret = parser.parse( "entra" );
+    } else {
+        toret = goAction.exe( parser.sentence );
+    }
+    
+    return toret;
+};
+
 
 // ----------------------------------------------- Prison's office --
 const locPrisonOffice = ctrl.places.creaLoc(
@@ -437,8 +450,8 @@ var locPrisonCell = ctrl.places.creaLoc(
      Puedes girarte sobre ti mismo para ${salir, oeste}."
 );
 locPrisonCell.open = false;
-locPrisonCell.pic = "res/cell.jpg";
 locPrisonCell.setExitBi( "oeste", locYard );
+locPrisonCell.pic = "res/cell.jpg";
 locPrisonCell.getExitsDesc = function() {
     return "Solo puedes salir al ${oeste, oeste}.";
 };
@@ -455,7 +468,6 @@ locPrisonCell.preExamine = function() {
         player.say( "Quizás finalmente este lugar \
                   no fue abandonado de una manera tan \
                   planeada como parecía." );
-        
     }
     
     return toret;
@@ -675,7 +687,7 @@ const locLighthouseHutFront = ctrl.places.creaLoc(
 locLighthouseHutFront.pic = "res/lighthouse.jpg";
 locLighthouseHutFront.setExitBi( "sur", locPathInJungle );
 locLighthouseHutFront.getExitsDesc = function() {
-    return "Puedes entrar en la casa al ${este, este}, \
+    return "Puedes entrar en la casa al ${este, entra}, \
             o volver al ${sur, sur}.";
 };
 
@@ -802,9 +814,9 @@ objKitchen.preExamine = function() {
     
     if ( this.has( objOil ) ) {
         toret += " Hay múltiples ${cacharros, busca en cocina} \
-                   de cotroso aspecto."
+                   de costroso aspecto."
     } else {
-        toret += " Múltiples y cotrosos cacharros se agolpan \
+        toret += " Múltiples y costrosos cacharros se agolpan \
                    en la repisa.";
     }
     
@@ -816,9 +828,10 @@ objKitchen.preSearch = function() {
     var toret = "Cacharros sin interés.";
     
     if ( this.has( objOil ) ) {
-        toret = "Rebuscando entre los cacharros has encontrado \
-                 un bote con algo de ennegrecido aceite.";
+        ctrl.print( "Rebuscando entre los cacharros has encontrado \
+                     un bote con algo de ennegrecido aceite." );
         player.say( "Este aceite podría ser útil... me lo quedo." );
+        toret = "";
         objOil.moveTo( player );
     }
     
@@ -1014,11 +1027,12 @@ objAxis.preSearch = function() {
     if ( ctrl.isPresent( objOil ) ) {
         this.oiled = true;
         objOil.moveTo( ctrl.places.limbo );
-        toret = "Vertiendo el aceite sobre el eje, la maquinaria \
+        ctrl.print( "Vertiendo el aceite sobre el eje, la maquinaria \
                  parece haberlo intentado, \
                  se oyó un zumbido y el foco \
-                 se ha movido un tanto... pero nada más.";
+                 se ha movido un tanto... pero nada más." );
         player.say( "Pues vaya fracaso..." );
+        toret = "";
     } else {
         player.say( "No tengo con qué engrasarlo..." );
     }
@@ -1076,15 +1090,19 @@ objFlareGun.preStart = function() {
     if ( this.owner == player ) {
         if ( currentLoc == locLighthouseYard ) {
             if ( ctrl.isPresent( objLightBulb ) ) {
-                player.say( "¡Toma ya!" );
-                toret = "Has disparado a la bombilla, sobre las serpientes, \
+                ctrl.print( "Has disparado a la bombilla, \
+                        sobre las serpientes, \
                         alzándose una gran llamarada sobre ellas. \
                         ¡Salen corriendo! El calor y las llamas, \
                         aunque de corta duración, hace que huyan \
-                        despavoridas. ¡El paso está ahora libre!";
+                        despavoridas. ¡El paso está ahora libre!" );
+                
+                player.say( "¡Toma ya!" );
                 
                 ctrl.print( "Tiras la pistola a un lado... \
                             ya no sirve para nada." );
+                
+                toret = "";
                 
                 objSnakes.moveTo( ctrl.places.limbo );
                 objLightBulb.moveTo( ctrl.places.limbo );
@@ -1171,7 +1189,7 @@ locLighthouseYard.preGo = function() {
 const objSnakes = ctrl.creaObj(
     "serpientes",
     [ "serpiente" ],
-    "Una miríada de serpiente se enroscan unas sobre otras... \
+    "Una miríada de serpientes se enroscan unas sobre otras... \
     Sisean amenazantes, e impiden el paso.",
     locLighthouseYard,
     Ent.Scenery
@@ -1285,7 +1303,7 @@ ctrl.achievements.add( "sos",
 const pc = ctrl.personas.creaPersona(
     "Enrique",
     [ "jugador", "enrique" ],
-    "Hecho una piltrada después de \
+    "Hecho una piltrafa después de \
      sobrevivir al naufragio de tu yate.",
     locBeach
 );
@@ -1303,4 +1321,5 @@ objCompass.preExamine = function() {
 };
 
 ctrl.personas.changePlayer( pc );
-ctrl.places.setStart( locBeach );
+//ctrl.places.setStart( locBeach );
+ctrl.places.setStart( locPrisonOffice );
