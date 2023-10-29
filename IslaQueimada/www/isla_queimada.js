@@ -445,9 +445,9 @@ const objKey = ctrl.creaObj(
 var locPrisonCell = ctrl.places.creaLoc(
     "Celda",
     [],
-    "La celda es estrecha y, en general, minúscula. Puedes ver \
-     ${un cadáver, ex cuerpo} en un rincón. \
-     Puedes girarte sobre ti mismo para ${salir, oeste}."
+    "La celda es estrecha y, en general, minúscula. \
+     Hay ${un cadáver, ex cuerpo} en un rincón. \
+     Podrías girarte sobre ti mismo para ${salir, oeste}."
 );
 locPrisonCell.open = false;
 locPrisonCell.setExitBi( "oeste", locYard );
@@ -483,10 +483,6 @@ const objCorpse = ctrl.creaObj(
     Ent.Scenery
 );
 
-objCorpse.postExamine = function() {
-    ctrl.achievements.achieved( "vampiros" );
-};
-
 const objArms = ctrl.creaObj(
     "brazo",
     [ "brazos" ],
@@ -501,7 +497,7 @@ objArms.preExamine = function() {
     
     if ( this.getTimesExamined() < 2 ) {
         toret = "Con cuidado, \
-                 apartas como puedes un brazo del otro... \
+                 apartas con dificultad un brazo del otro... \
                  Ciertos desagradables chasquidos \
                  acompañan el movimiento \
                  de los brazos al separarse.</p><p>"
@@ -509,6 +505,10 @@ objArms.preExamine = function() {
     }
     
     return toret;
+};
+
+objArms.postExamine = function() {
+    ctrl.achievements.achieved( "vampiros" );
 };
 
 const objClothes = ctrl.creaObj(
